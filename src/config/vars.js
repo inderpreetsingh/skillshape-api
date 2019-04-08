@@ -1,12 +1,17 @@
-// const path = require('path');
+const path = require('path');
+import {get} from 'lodash';
 
-// // import .env variables
-// require('dotenv-safe').load({
-//   path: path.join(__dirname, '../../.env'),
-//   sample: path.join(__dirname, '../../.env.example'),
-// });
+const NODE_ENV = get(process,"env.NODE_ENV",'production');
+if( NODE_ENV == 'development'){
+  // // import .env variables
+  require('dotenv-safe').load({
+    path: path.join(__dirname, '../../.env'),
+    sample: path.join(__dirname, '../../.env.example'),
+  });
+}
 
-console.log("TCL: process.env.JWT_SECRET", process.env.JWT_SECRET)
+console.log("TCL: NODE_ENV", NODE_ENV);
+
 module.exports = {
   env: process.env.NODE_ENV,
   port: process.env.PORT,
