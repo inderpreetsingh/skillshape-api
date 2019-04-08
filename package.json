@@ -13,7 +13,7 @@
   "scripts": {
     "precommit": "npm run lint",
     "prestart": "npm run docs",
-    "start": "nodemon ./src/index.js",
+    "start": "nodemon ./src/index.js --exec babel-node --presets babel-preset-env es2015,stage-0",
     "dev": "nodemon ./src/index.js --exec babel-node --presets babel-preset-env es2015,stage-0",
     "lint": "eslint **/*.js --ignore-path .gitignore --ignore-pattern internals/scripts",
     "lint:fix": "yarn lint -- --fix",
@@ -82,9 +82,7 @@
     "passport-http-bearer": "^1.0.1",
     "passport-jwt": "4.0.0",
     "sha256": "^0.2.0",
-    "uuid": "^3.1.0"
-  },
-  "devDependencies": {
+    "uuid": "^3.1.0",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
     "babel-loader": "^8.0.4",
@@ -92,7 +90,10 @@
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-es2015": "^6.24.1",
-    "babel-preset-stage-0": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1"
+  },
+  "devDependencies": {
+
     "chai": "^4.1.0",
     "chai-as-promised": "^7.1.1",
     "coveralls": "^3.0.0",
