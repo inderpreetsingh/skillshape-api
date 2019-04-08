@@ -6,7 +6,6 @@ require('dotenv-safe').load({
   sample: path.join(__dirname, '../../.env.example'),
 });
 
-console.log("TCL: process.env", process.env)
 module.exports = {
   env: process.env.NODE_ENV,
   port: process.env.PORT,
