@@ -1,7 +1,7 @@
 const path = require('path');
 import {get} from 'lodash';
 
-const NODE_ENV = get(process,"env.NODE_ENV",'production');
+const NODE_ENV = get(process,"env.NODE_ENV",'development');
 if( NODE_ENV == 'development'){
   // // import .env variables
   require('dotenv-safe').load({
