@@ -1,11 +1,12 @@
-const path = require('path');
+// const path = require('path');
 
-// import .env variables
-require('dotenv-safe').load({
-  path: path.join(__dirname, '../../.env'),
-  sample: path.join(__dirname, '../../.env.example'),
-});
+// // import .env variables
+// require('dotenv-safe').load({
+//   path: path.join(__dirname, '../../.env'),
+//   sample: path.join(__dirname, '../../.env.example'),
+// });
 
+console.log("TCL: process.env.JWT_SECRET", process.env.JWT_SECRET)
 module.exports = {
   env: process.env.NODE_ENV,
   port: process.env.PORT,
