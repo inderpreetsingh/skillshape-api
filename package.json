@@ -13,7 +13,7 @@
   "scripts": {
     "precommit": "npm run lint",
     "prestart": "npm run docs",
-    "start": "nodemon ./src/index.js --exec babel-node --presets babel-preset-env es2015,stage-0",
+    "start": "nodemon ./src/index.js",
     "dev": "nodemon ./src/index.js --exec babel-node --presets babel-preset-env es2015,stage-0",
     "lint": "eslint **/*.js --ignore-path .gitignore --ignore-pattern internals/scripts",
     "lint:fix": "yarn lint -- --fix",
