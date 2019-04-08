@@ -26,7 +26,6 @@
     "postcoverage": "opn coverage/lcov-report/index.html",
     "validate": "yarn lint && yarn test",
     "postpublish": "git push --tags",
-    "deploy": "sh ./deploy.sh",
     "docs": "apidoc -i src -o docs",
     "postdocs": "opn docs/index.html",
     "docker:start": "cross-env NODE_ENV=production pm2-docker start ./src/index.js",
@@ -62,6 +61,7 @@
     "starter project"
   ],
   "dependencies": {
+    "apidoc": "^0.17.5",
     "axios": "^0.18.0",
     "bcryptjs": "2.4.3",
     "bluebird": "^3.5.0",
@@ -89,7 +89,6 @@
     "uuid": "^3.1.0"
   },
   "devDependencies": {
-    "apidoc": "^0.17.5",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
     "babel-loader": "^8.0.4",

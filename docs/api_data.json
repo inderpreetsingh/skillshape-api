@@ -286,7 +286,7 @@
     "groupTitle": "Auth"
   },
   {
-    "type": "get",
+    "type": "post",
     "url": "v1/schools/getSchools",
     "title": "Get Schools List",
     "description": "<p>Get a list of Schools</p>",
@@ -389,7 +389,7 @@
     "groupTitle": "Schools"
   },
   {
-    "type": "get",
+    "type": "post",
     "url": "v1/classTypes/getClassTypes",
     "title": "Get Class Types",
     "description": "<p>Get a list of class types</p>",
