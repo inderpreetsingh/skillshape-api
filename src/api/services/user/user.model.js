@@ -22,7 +22,7 @@ const roles = ["user", "admin"];
  * User Profile
  * @private
 */
-const UserProfile = new mongoose.Schema({
+const UserProfile = {
   
   name: {
     type: String,
@@ -152,7 +152,7 @@ const UserProfile = new mongoose.Schema({
     optional: true,
     defaultValue: false
   },
-});
+};
 
 /**
  * User Schema
@@ -256,6 +256,7 @@ const userSchema = new mongoose.Schema(
  */
 userSchema.pre("save", async function save(next) {
   try {
+		console.log("TCL: save -> this", this)
     if (!this.isModified("services.password")) return next();
     const hash = await bcrypt.hash(SHA256(this.services.password.bcrypt), 10);
     this.services = { password: { bcrypt: hash } };

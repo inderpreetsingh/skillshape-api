@@ -1,33 +1,56 @@
-import mongoose  from 'mongoose';
-const User = require('../user/user.model');
-const RefreshToken = require('./refreshToken.model');
-const moment = require('moment-timezone');
-const { jwtExpirationInterval } = require('../../../config/vars');
+import mongoose from "mongoose";
+const User = require("../user/user.model");
+const RefreshToken = require("./refreshToken.model");
+const moment = require("moment-timezone");
+const { jwtExpirationInterval } = require("../../../config/vars");
 
 /**
  * Returns a formated object with tokens
  * @private
  */
 function generateTokenResponse(user, accessToken) {
-  const tokenType = 'Bearer';
+  const tokenType = "Bearer";
   const refreshToken = RefreshToken.generate(user).token;
-  const expiresIn = moment().add(jwtExpirationInterval, 'minutes');
+  const expiresIn = moment().add(jwtExpirationInterval, "minutes");
   return {
-    tokenType, accessToken, refreshToken, expiresIn,
+    tokenType,
+    accessToken,
+    refreshToken,
+    expiresIn
   };
 }
-
 
 /**
  * Returns jwt token if registration was successful
  * @public
  */
-exports.signUp = async (userData) => {
+exports.signUp = async userData => {
   try {
-    userData.services = {password : {bcrypt : userData.password}} ;
-    userData.emails=[{address:userData.email}];
-    userData._id = mongoose.Types.ObjectId();
-    const user = await new User(userData).save();
+    let {
+      password,
+      email,
+      name,
+      userType,
+      sendMeSkillShapeNotification,
+      birthYear,
+      signUpType
+    } = userData;
+    let nameModified = name.split(" ");
+    let payLoad = {
+      _id: mongoose.Types.ObjectId(),
+      services: { password: { bcrypt: password } },
+      emails: [{ address: email,verified:false }],
+      profile: {
+        firstName: nameModified[0],
+        lastName: nameModified[1],
+        userType,
+        sendMeSkillShapeNotification,
+        birthYear
+      },
+      sign_up_service: signUpType || "Unknown"
+    };
+
+    const user = await new User(payLoad).save();
     const userTransformed = user.transform();
     const token = generateTokenResponse(user, user.token());
     return { token, user: userTransformed };
@@ -40,7 +63,7 @@ exports.signUp = async (userData) => {
  * Returns jwt token if valid username and password is provided
  * @public
  */
-exports.login = async (userData) => {
+exports.login = async userData => {
   try {
     const { user, accessToken } = await User.findAndGenerateToken(userData);
     const token = generateTokenResponse(user, accessToken);
@@ -56,7 +79,7 @@ exports.login = async (userData) => {
  * Returns jwt token
  * @public
  */
-exports.oAuth = async (user) => {
+exports.oAuth = async user => {
   try {
     const accessToken = user.token();
     const token = generateTokenResponse(user, accessToken);
@@ -75,9 +98,12 @@ exports.refresh = async ({ email, refreshToken }) => {
   try {
     const refreshObject = await RefreshToken.findOneAndRemove({
       userEmail: email,
-      token: refreshToken,
+      token: refreshToken
     });
-    const { user, accessToken } = await User.findAndGenerateToken({ email, refreshObject });
+    const { user, accessToken } = await User.findAndGenerateToken({
+      email,
+      refreshObject
+    });
     return generateTokenResponse(user, accessToken);
   } catch (error) {
     throw error;
