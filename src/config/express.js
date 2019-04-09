@@ -45,7 +45,6 @@ passport.use('facebook', strategies.facebook);
 passport.use('google', strategies.google);
 
 app.use('/docs', express.static('docs'));
-app.use('/',(req,res,next)=>res.end('Rest APIs of Skillshape.'))
 // enable rate limit
 app.use(rateLimiter());
 
