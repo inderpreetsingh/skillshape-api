@@ -11,9 +11,9 @@
     "yarn": "*"
   },
   "scripts": {
-    "precommit": "npm run lint",
+    "precommit": "npm run lint && npm run build",
     "prestart": "npm run docs",
-    "start": "npm run build && cross-env NODE_ENV=production node ./lib/index.js",
+    "start": "cross-env NODE_ENV=production node ./lib/index.js",
     "build": "babel src --out-dir lib -D",
     "dev": "nodemon ./src/index.js --exec babel-node --presets babel-preset-env es2015,stage-0",
     "lint": "eslint **/*.js --ignore-path .gitignore --ignore-pattern internals/scripts",
