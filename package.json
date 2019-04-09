@@ -16,7 +16,7 @@
     "start": "cross-env NODE_ENV=production node ./lib/index.js",
     "build": "babel src --out-dir lib -D",
     "dev": "nodemon ./src/index.js --exec babel-node --presets babel-preset-env es2015,stage-0",
-    "lint": "eslint **/*.js --ignore-path .gitignore --ignore-pattern internals/scripts",
+    "lint": "eslint . --ignore-path .gitignore --ignore-pattern internals/scripts",
     "lint:fix": "yarn lint -- --fix",
     "lint:watch": "yarn lint -- --watch",
     "test": "cross-env NODE_ENV=test nyc --reporter=html --reporter=text -x '**/authProviders.js' -x '**/mongoose.js' mocha --timeout 20000 --recursive $(find src -name '*test.js') --exit",

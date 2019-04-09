@@ -1,156 +1,157 @@
-const mongoose = require("mongoose");
-const httpStatus = require("http-status");
-const { omitBy, isNil } = require("lodash");
-const bcrypt = require("bcryptjs");
-const moment = require("moment-timezone");
-const jwt = require("jwt-simple");
 import crypto from 'crypto';
-const uuidv4 = require("uuid/v4");
-import SHA256 from "sha256";
-const APIError = require("../../utils/APIError");
+import SHA256 from 'sha256';
+
+const mongoose = require('mongoose');
+const httpStatus = require('http-status');
+const { omitBy, isNil } = require('lodash');
+const bcrypt = require('bcryptjs');
+const moment = require('moment-timezone');
+const jwt = require('jwt-simple');
+const uuidv4 = require('uuid/v4');
+
+const APIError = require('../../utils/APIError');
 const {
-  env,
   jwtSecret,
-  jwtExpirationInterval
-} = require("../../../config/vars");
+  jwtExpirationInterval,
+} = require('../../../config/vars');
 
 /**
  * User Roles
  */
-const roles = ["user", "admin"];
-/** 
+const roles = ['user', 'admin'];
+/**
  * User Profile
  * @private
 */
 const UserProfile = {
-  
+
   name: {
     type: String,
-    optional: true
+    optional: true,
   },
   firstName: {
     optional: true,
-    type: String
+    type: String,
   },
   lastName: {
     optional: true,
-    type: String
+    type: String,
   },
   nickame: {
     optional: true,
-    type: String
+    type: String,
   },
   url: {
     optional: true,
-    type: String
+    type: String,
   },
   phone: {
     optional: true,
-    type: String
+    type: String,
   },
   pic: {
     optional: true,
-    type: String
+    type: String,
   },
   medium: {
     optional: true,
-    type: String
+    type: String,
   },
   low: {
     optional: true,
-    type: String
+    type: String,
   },
   dob: {
     optional: true,
-    type: Date
+    type: Date,
   },
   address: {
     optional: true,
-    type: String
+    type: String,
   },
   gender: {
     optional: true,
-    type: String
+    type: String,
   },
   desc: {
     optional: true,
-    type: String
+    type: String,
   },
   expertise: {
     optional: true,
-    type: String
+    type: String,
   },
   state: {
     optional: true,
-    type: String
+    type: String,
   },
   user_type: {
     optional: true,
     type: String,
-    allowedValues: ["C", "P", "S", "T"]
+    allowedValues: ['C', 'P', 'S', 'T'],
   },
   company_id: {
     optional: true,
-    type: String
+    type: String,
   },
   role: {
     optional: true,
-    type: String
+    type: String,
   },
   access_key: {
     type: String,
-    optional: true
+    optional: true,
   },
   is_demo_user: {
     type: Boolean,
-    optional: true
+    optional: true,
   },
   acess_type: {
     type: String,
-    optional: true
+    optional: true,
   },
   classIds: {
     type: [String],
-    optional: true
+    optional: true,
   },
   schoolId: {
     type: [String],
-    optional: true
+    optional: true,
   },
   passwordSetByUser: {
     type: Boolean,
-    optional: true
+    optional: true,
   },
   sendMeSkillShapeNotification: {
     type: Boolean,
-    optional: true
+    optional: true,
   },
   userType: {
     type: String,
-    optional: true
+    optional: true,
   },
   about: {
     type: String,
-    optional: true
+    optional: true,
   },
   currency: {
     type: String,
-    optional: true
+    optional: true,
   },
   birthYear: {
     type: Number,
-    optional: true
+    optional: true,
   },
   coords: {
     type: [Number], // [<longitude>, <latitude>]
-    index: "2d", // create the geospatial index
+    index: '2d', // create the geospatial index
     optional: true,
-    decimal: true
+    decimal: true,
   },
   stripeStatus: {
     type: Boolean,
     optional: true,
-    defaultValue: false
+    defaultValue: false,
   },
 };
 
@@ -158,95 +159,83 @@ const UserProfile = {
  * User Schema
  * @private
  */
-const userSchema = new mongoose.Schema(
-  {
-    _id:{
-      type:String
+const userSchema = new mongoose.Schema({
+  _id: {
+    type: String,
+  },
+  emails: [
+    {
+      address: {
+        type: String,
+        unique: true,
+        required: true,
+      },
+      verified: {
+        type: Boolean,
+        default: false,
+      },
     },
-    emails: [
-      {
-        address: {
-          type: String,
-          unique: true,
-          required: true
-        },
-        verified: {
-          type: Boolean,
-          default: false
-        }
-      }
-    ],
-   
-    services: {
-      facebook: {},
-      google: {},
-      password: { bcrypt: String }
-    },
-    username: {
-      type: String,
-      // For accounts-password, either emails or username is required, but not both. It is OK to make this
-      // optional here because the accounts-password package does its own validation.
-      // Third-party login packages may not require either. Adjust this schema as necessary for your usage.
-      optional: true
-    },
-    profile:{
-      type:UserProfile,
-      optional:true
-    },
-    emails: {
-      type: Array,
-      // For accounts-password, either emails or username is required, but not both. It is OK to make this
-      // optional here because the accounts-password package does its own validation.
-      // Third-party login packages may not require either. Adjust this schema as necessary for your usage.
-      optional: true
-    },
-    createdAt: {
-      type: Date,
-      optional: true
-    },
-    roles: {
-      type: Array,
-      optional: true
-    },
-    "roles.$": {
-      type: String,
-      optional: true
-    },
-    media_access_permission: {
-      type: String,
-      optional: true
-    },
-    // this is used to know which service user have used for the sign-up process.
-    sign_up_service: {
-      type: String,
-      optional: true
-    },
-    term_cond_accepted: {
-      type: Boolean,
-      optional: true
-    },
-    stripeCusIds: {
-      type: Array,
-      optional: true
-    },
-    "stripeCusIds.$":{
-      type: String,
-      optional: true
-    },
-    refresh_token:{
-      type:String,
-      optional:true
-    },
-    googleCalendarId:{
-      type:String,
-      optional:true
-    },
-    savedByUser:{
-      type: Boolean,
-      optional: true
-    }
-  }
-);
+  ],
+
+  services: {
+    facebook: {},
+    google: {},
+    password: { bcrypt: String },
+  },
+  username: {
+    type: String,
+    optional: true,
+  },
+  profile: {
+    type: UserProfile,
+    optional: true,
+  },
+  createdAt: {
+    type: Date,
+    optional: true,
+  },
+  roles: {
+    type: Array,
+    optional: true,
+  },
+  'roles.$': {
+    type: String,
+    optional: true,
+  },
+  media_access_permission: {
+    type: String,
+    optional: true,
+  },
+  // this is used to know which service user have used for the sign-up process.
+  sign_up_service: {
+    type: String,
+    optional: true,
+  },
+  term_cond_accepted: {
+    type: Boolean,
+    optional: true,
+  },
+  stripeCusIds: {
+    type: Array,
+    optional: true,
+  },
+  'stripeCusIds.$': {
+    type: String,
+    optional: true,
+  },
+  refresh_token: {
+    type: String,
+    optional: true,
+  },
+  googleCalendarId: {
+    type: String,
+    optional: true,
+  },
+  savedByUser: {
+    type: Boolean,
+    optional: true,
+  },
+});
 
 /**
  * Add your
@@ -254,10 +243,10 @@ const userSchema = new mongoose.Schema(
  * - validations
  * - virtuals
  */
-userSchema.pre("save", async function save(next) {
+userSchema.pre('save', async function save(next) {
   try {
-		console.log("TCL: save -> this", this)
-    if (!this.isModified("services.password")) return next();
+    console.log('TCL: save -> this', this);
+    if (!this.isModified('services.password')) return next();
     const hash = await bcrypt.hash(SHA256(this.services.password.bcrypt), 10);
     this.services = { password: { bcrypt: hash } };
     return next();
@@ -272,9 +261,9 @@ userSchema.pre("save", async function save(next) {
 userSchema.method({
   transform() {
     const transformed = {};
-    const fields = ["id", "name", "email", "picture", "role", "createdAt"];
+    const fields = ['id', 'name', 'email', 'picture', 'role', 'createdAt'];
 
-    fields.forEach(field => {
+    fields.forEach((field) => {
       transformed[field] = this[field];
     });
 
@@ -284,20 +273,20 @@ userSchema.method({
   token() {
     const playload = {
       exp: moment()
-        .add(jwtExpirationInterval, "minutes")
+        .add(jwtExpirationInterval, 'minutes')
         .unix(),
       iat: moment().unix(),
-      sub: this._id
+      sub: this._id,
     };
     return jwt.encode(playload, jwtSecret);
   },
 
   // checking if password is valid
 
-async passwordMatches(password) {
-  const encryptedPassword = crypto.createHash('sha256').update(password).digest('hex');
-  return bcrypt.compareSync(encryptedPassword, this.services.password.bcrypt);
-  }
+  async passwordMatches(password) {
+    const encryptedPassword = crypto.createHash('sha256').update(password).digest('hex');
+    return bcrypt.compareSync(encryptedPassword, this.services.password.bcrypt);
+  },
 });
 
 /**
@@ -324,8 +313,8 @@ userSchema.statics = {
       }
 
       throw new APIError({
-        message: "User does not exist",
-        status: httpStatus.NOT_FOUND
+        message: 'User does not exist',
+        status: httpStatus.NOT_FOUND,
       });
     } catch (error) {
       throw error;
@@ -340,26 +329,27 @@ userSchema.statics = {
    */
   async findAndGenerateToken(options) {
     const { email, password, refreshObject } = options;
-    if (!email)
+    if (!email) {
       throw new APIError({
-        message: "An email is required to generate a token"
+        message: 'An email is required to generate a token',
       });
+    }
 
-    const user = await this.findOne({ "emails.address": email }).exec();
+    const user = await this.findOne({ 'emails.address': email }).exec();
     const err = {
       status: httpStatus.UNAUTHORIZED,
-      isPublic: true
+      isPublic: true,
     };
     if (password) {
       if (user && (await user.passwordMatches(password))) {
         return { user, accessToken: user.token() };
       }
-      
-      err.message = "Incorrect email or password";
+
+      err.message = 'Incorrect email or password';
     } else if (refreshObject && refreshObject.userEmail === email) {
       return { user, accessToken: user.token() };
     } else {
-      err.message = "Incorrect email or refreshToken";
+      err.message = 'Incorrect email or refreshToken';
     }
     throw new APIError(err);
   },
@@ -371,7 +361,9 @@ userSchema.statics = {
    * @param {number} limit - Limit number of users to be returned.
    * @returns {Promise<User[]>}
    */
-  list({ page = 1, perPage = 30, name, email, role }) {
+  list({
+    page = 1, perPage = 30, name, email, role,
+  }) {
     const options = omitBy({ name, email, role }, isNil);
 
     return this.find(options)
@@ -391,28 +383,30 @@ userSchema.statics = {
   checkDuplicateEmail(error) {
     if (
       error.code === 11000 &&
-      (error.name === "BulkWriteError" || error.name === "MongoError")
+      (error.name === 'BulkWriteError' || error.name === 'MongoError')
     ) {
       return new APIError({
-        message: "Validation Error",
+        message: 'Validation Error',
         errors: [
           {
-            field: "email",
-            location: "body",
-            messages: ['"email" already exists']
-          }
+            field: 'email',
+            location: 'body',
+            messages: ['"email" already exists'],
+          },
         ],
         status: httpStatus.CONFLICT,
         isPublic: true,
-        stack: error.stack
+        stack: error.stack,
       });
     }
     return error;
   },
 
-  async oAuthLogin({ service, id, email, name, picture }) {
+  async oAuthLogin({
+    service, id, email, name, picture,
+  }) {
     const user = await this.findOne({
-      $or: [{ [`services.${service}`]: id }, { email }]
+      $or: [{ [`services.${service}`]: id }, { email }],
     });
     if (user) {
       user.services[service] = id;
@@ -426,12 +420,12 @@ userSchema.statics = {
       email,
       password,
       name,
-      picture
+      picture,
     });
-  }
+  },
 };
 
 /**
  * @typedef User
  */
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model('User', userSchema);
