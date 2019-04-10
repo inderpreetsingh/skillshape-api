@@ -1,4 +1,5 @@
 const Joi = require('joi');
+
 module.exports = {
   // POST /v1/auth/signUp
   signUp: {
