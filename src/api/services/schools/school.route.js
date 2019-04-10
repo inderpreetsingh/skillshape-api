@@ -1,13 +1,14 @@
-const express = require('express');
-import validate from "express-validation";
-import {getSchools} from "./school.validation";
+import validate from 'express-validation';
+import { getSchools } from './school.validation';
 import controller from './school.controller';
+
+const express = require('express');
+
 const router = express.Router();
 
 
-
 router
-  .route("/getSchools")
+  .route('/getSchools')
   /**
    * @api {post} v1/schools/getSchools Get Schools List
    * @apiDescription Get a list of Schools

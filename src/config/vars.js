@@ -1,16 +1,18 @@
-const path = require('path');
-import {get} from 'lodash';
+import { get } from 'lodash';
+import dotSave from 'dotenv-safe';
 
-const NODE_ENV = get(process,"env.NODE_ENV",'development');
-if( NODE_ENV == 'development'){
+const path = require('path');
+
+const NODE_ENV = get(process, 'env.NODE_ENV', 'development');
+if (NODE_ENV === 'development') {
   // // import .env variables
-  require('dotenv-safe').load({
+  dotSave.load({
     path: path.join(__dirname, '../../.env'),
     sample: path.join(__dirname, '../../.env.example'),
   });
 }
 
-console.log("TCL: NODE_ENV", NODE_ENV);
+console.log('TCL: NODE_ENV', NODE_ENV);
 
 module.exports = {
   env: process.env.NODE_ENV,
@@ -18,7 +20,7 @@ module.exports = {
   jwtSecret: process.env.JWT_SECRET,
   jwtExpirationInterval: process.env.JWT_EXPIRATION_MINUTES,
   mongo: {
-    uri:  process.env.MONGO_URI,
+    uri: process.env.MONGO_URI,
   },
   logs: process.env.NODE_ENV === 'dev',
   rateLimitTime: process.env.RATE_LIMIT_TIME,

@@ -1,13 +1,14 @@
-const express = require('express');
-import validate from "express-validation";
-import {getClassTypes} from "./classType.validation";
+import validate from 'express-validation';
+import { getClassTypes } from './classType.validation';
 import controller from './classType.controller';
+
+const express = require('express');
+
 const router = express.Router();
 
 
-
 router
-  .route("/getClassTypes")
+  .route('/getClassTypes')
   /**
    * @api {post} v1/classTypes/getClassTypes Get Class Types
    * @apiDescription Get a list of class types
