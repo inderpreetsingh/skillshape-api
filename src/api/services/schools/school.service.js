@@ -84,7 +84,7 @@ exports.getSchool = async (filter) => {
         });
         schoolIds = uniq(schoolIds);
         if (!isEmpty(schoolIds)) {
-          schoolFilter._id = { $in: schoolIds };
+          schoolFilter._id = { $in: schoolIds }; // eslint-disable-line no-underscore-dangle
         }
       }
     }

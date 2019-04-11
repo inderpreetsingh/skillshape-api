@@ -245,7 +245,6 @@ const userSchema = new mongoose.Schema({
  */
 userSchema.pre('save', async function save(next) {
   try {
-    console.log('TCL: save -> this', this);
     if (!this.isModified('services.password')) return next();
     const hash = await bcrypt.hash(SHA256(this.services.password.bcrypt), 10);
     this.services = { password: { bcrypt: hash } };
@@ -276,7 +275,7 @@ userSchema.method({
         .add(jwtExpirationInterval, 'minutes')
         .unix(),
       iat: moment().unix(),
-      sub: this._id,
+      sub: this._id, // eslint-disable-line no-underscore-dangle
     };
     return jwt.encode(playload, jwtSecret);
   },

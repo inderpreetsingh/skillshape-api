@@ -7,7 +7,7 @@ const { env } = require('../../config/vars');
  * Error handler. Send stacktrace only during development
  * @public
  */
-const handler = (err, req, res, next) => {
+const handler = (err, req, res, next) => { // eslint-disable-line
   const response = {
     code: err.status,
     message: err.message || httpStatus[err.status],
@@ -19,7 +19,7 @@ const handler = (err, req, res, next) => {
   }
   res.status(err.status);
   res.json(response);
-  res.end();
+  return res.end();
 };
 exports.handler = handler;
 
@@ -49,7 +49,7 @@ exports.converter = (err, req, res, next) => {
       stack: err.stack,
     });
   }
-  return handler(convertedError, req, res);
+  return handler(convertedError, req, res, next);
 };
 
 /**
@@ -61,7 +61,7 @@ exports.notFound = (req, res, next) => {
     message: 'Not found',
     status: httpStatus.NOT_FOUND,
   });
-  return handler(err, req, res);
+  return handler(err, req, res, next);
 };
 
 /**
@@ -73,5 +73,5 @@ exports.rateLimitHandler = (req, res, next) => {
     message: 'Rate limt exceeded, please try again later some time.',
     status: httpStatus.TOO_MANY_REQUESTS,
   });
-  return handler(err, req, res);
+  return handler(err, req, res, next);
 };

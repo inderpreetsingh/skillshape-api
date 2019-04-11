@@ -1,5 +1,7 @@
 /* eslint-disable arrow-body-style */
 /* eslint-disable no-unused-expressions */
+/* eslint-env mocha */
+
 const request = require('supertest');
 const httpStatus = require('http-status');
 const { expect } = require('chai');
@@ -267,7 +269,7 @@ describe('Users API', async () => {
 
   describe('GET /v1/users/:userId', () => {
     it('should get user', async () => {
-      const id = (await User.findOne({}))._id;
+      const id = (await User.findOne({}))._id; // eslint-disable-line no-underscore-dangle
       delete dbUsers.branStark.password;
 
       return request(app)
@@ -302,8 +304,8 @@ describe('Users API', async () => {
     });
 
     it('should report error when logged user is not the same as the requested one', async () => {
-      const id = (await User.findOne({ email: dbUsers.branStark.email }))._id;
-
+      const id = ( // eslint-disable-line no-underscore-dangle
+        await User.findOne({ email: dbUsers.branStark.email }))._id;
       return request(app)
         .get(`/v1/users/${id}`)
         .set('Authorization', `Bearer ${userAccessToken}`)
@@ -318,8 +320,8 @@ describe('Users API', async () => {
   describe('PUT /v1/users/:userId', () => {
     it('should replace user', async () => {
       delete dbUsers.branStark.password;
-      const id = (await User.findOne(dbUsers.branStark))._id;
-
+      const id = ( // eslint-disable-line no-underscore-dangle
+        await User.findOne(dbUsers.branStark))._id;
       return request(app)
         .put(`/v1/users/${id}`)
         .set('Authorization', `Bearer ${adminAccessToken}`)
@@ -333,7 +335,7 @@ describe('Users API', async () => {
     });
 
     it('should report error when email is not provided', async () => {
-      const id = (await User.findOne({}))._id;
+      const id = (await User.findOne({}))._id; // eslint-disable-line no-underscore-dangle
       delete user.email;
 
       return request(app)
@@ -352,7 +354,7 @@ describe('Users API', async () => {
     });
 
     it('should report error user when password length is less than 6', async () => {
-      const id = (await User.findOne({}))._id;
+      const id = (await User.findOne({}))._id; // eslint-disable-line no-underscore-dangle
       user.password = '12345';
 
       return request(app)
@@ -382,8 +384,8 @@ describe('Users API', async () => {
     });
 
     it('should report error when logged user is not the same as the requested one', async () => {
-      const id = (await User.findOne({ email: dbUsers.branStark.email }))._id;
-
+      const id = ( // eslint-disable-line no-underscore-dangle
+        await User.findOne({ email: dbUsers.branStark.email }))._id;
       return request(app)
         .put(`/v1/users/${id}`)
         .set('Authorization', `Bearer ${userAccessToken}`)
@@ -395,7 +397,8 @@ describe('Users API', async () => {
     });
 
     it('should not replace the role of the user (not admin)', async () => {
-      const id = (await User.findOne({ email: dbUsers.jonSnow.email }))._id;
+      const id = (// eslint-disable-line no-underscore-dangle
+        await User.findOne({ email: dbUsers.jonSnow.email }))._id;
       const role = 'admin';
 
       return request(app)
@@ -410,7 +413,8 @@ describe('Users API', async () => {
 
     it('should not assign the already existing email', async () => {
       delete dbUsers.branStark.password;
-      const id = (await User.findOne(dbUsers.branStark))._id;
+      const id = ( // eslint-disable-line no-underscore-dangle
+        await User.findOne(dbUsers.branStark))._id;
       user.email = dbUsers.jonSnow.email;
       return request(app)
         .put(`/v1/users/${id}`)
@@ -431,7 +435,8 @@ describe('Users API', async () => {
   describe('PATCH /v1/users/:userId', () => {
     it('should update user', async () => {
       delete dbUsers.branStark.password;
-      const id = (await User.findOne(dbUsers.branStark))._id;
+      const id = ( // eslint-disable-line no-underscore-dangle
+        await User.findOne(dbUsers.branStark))._id;
       const { name } = user;
 
       return request(app)
@@ -447,8 +452,8 @@ describe('Users API', async () => {
 
     it('should not update user when no parameters were given', async () => {
       delete dbUsers.branStark.password;
-      const id = (await User.findOne(dbUsers.branStark))._id;
-
+      const id = ( // eslint-disable-line no-underscore-dangle
+        await User.findOne(dbUsers.branStark))._id;
       return request(app)
         .patch(`/v1/users/${id}`)
         .set('Authorization', `Bearer ${adminAccessToken}`)
@@ -471,8 +476,8 @@ describe('Users API', async () => {
     });
 
     it('should report error when logged user is not the same as the requested one', async () => {
-      const id = (await User.findOne({ email: dbUsers.branStark.email }))._id;
-
+      const id = (// eslint-disable-line no-underscore-dangle
+        await User.findOne({ email: dbUsers.branStark.email }))._id;
       return request(app)
         .patch(`/v1/users/${id}`)
         .set('Authorization', `Bearer ${userAccessToken}`)
@@ -484,7 +489,8 @@ describe('Users API', async () => {
     });
 
     it('should not update the role of the user (not admin)', async () => {
-      const id = (await User.findOne({ email: dbUsers.jonSnow.email }))._id;
+      const id = ( // eslint-disable-line no-underscore-dangle
+        await User.findOne({ email: dbUsers.jonSnow.email }))._id;
       const role = 'admin';
 
       return request(app)
@@ -499,7 +505,8 @@ describe('Users API', async () => {
 
     it('should not assign the already existing email', async () => {
       delete dbUsers.branStark.password;
-      const id = (await User.findOne(dbUsers.branStark))._id;
+      const id = (// eslint-disable-line no-underscore-dangle
+        await User.findOne(dbUsers.branStark))._id;
       user.email = dbUsers.jonSnow.email;
       return request(app)
         .patch(`/v1/users/${id}`)
@@ -519,7 +526,7 @@ describe('Users API', async () => {
 
   describe('DELETE /v1/users', () => {
     it('should delete user', async () => {
-      const id = (await User.findOne({}))._id;
+      const id = (await User.findOne({}))._id;// eslint-disable-line no-underscore-dangle
 
       return request(app)
         .delete(`/v1/users/${id}`)
@@ -544,8 +551,8 @@ describe('Users API', async () => {
     });
 
     it('should report error when logged user is not the same as the requested one', async () => {
-      const id = (await User.findOne({ email: dbUsers.branStark.email }))._id;
-
+      const id = ( // eslint-disable-line no-underscore-dangle
+        await User.findOne({ email: dbUsers.branStark.email }))._id;
       return request(app)
         .delete(`/v1/users/${id}`)
         .set('Authorization', `Bearer ${userAccessToken}`)

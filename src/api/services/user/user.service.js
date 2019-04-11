@@ -8,7 +8,6 @@ const { handler: errorHandler } = require('../../middlewares/error');
  */
 exports.load = async (req, res, next, id) => {
   try {
-    console.log(12);
     const user = await User.get(id);
     req.locals = { user };
     return next();
@@ -54,7 +53,7 @@ exports.replace = async (user, newUserData) => {
     const newUserObject = omit(newUser.toObject(), '_id', ommitRole);
 
     await user.update(newUserObject, { override: true, upsert: true });
-    const savedUser = await User.findById(user._id);
+    const savedUser = await User.findById(user._id); // eslint-disable-line no-underscore-dangle
 
     return savedUser.transform();
   } catch (error) {

@@ -12,7 +12,6 @@ if (NODE_ENV === 'development') {
   });
 }
 
-console.log('TCL: NODE_ENV', NODE_ENV);
 
 module.exports = {
   env: process.env.NODE_ENV,

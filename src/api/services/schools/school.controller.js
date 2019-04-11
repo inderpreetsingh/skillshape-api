@@ -12,7 +12,6 @@ exports.getSchools = async (req, res, next) => {
     res.json(data);
     return next();
   } catch (error) {
-    console.log('TCL: exports.getSchools -> error', error);
     return errorHandler(error, req, res);
   }
 };

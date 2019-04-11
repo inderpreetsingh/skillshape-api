@@ -9,7 +9,8 @@ const mongoose = require('./config/mongoose');
 mongoose.connect();
 
 // listen to requests
-app.listen(port, () => console.info(`server started on port ${port} (${env})`));
+app.listen(port, () =>
+  console.info(`server started on port ${port} (${env})`)); // eslint-disable-line no-console
 
 /**
 * Exports express
